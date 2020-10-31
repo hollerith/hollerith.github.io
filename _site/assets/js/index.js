@@ -169,5 +169,3 @@ var body = {
   "$cell": true,
   "$has": [ header, root ]
 }
-
-
