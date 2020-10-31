@@ -155,8 +155,19 @@ var chart = {
 
 var root = {
   "id": "root",
-  "$type": "figure",
-  "$cell": true,
-  "$has": [ header, caption, chart ]
+  "$type": "div",
+  "class": "container",
+  "$has": [  
+    {
+      "$type": "figure",
+      "$has": [ caption, chart ]  
+    }
+  ]
 }
+
+var body = {
+  "$cell": true,
+  "$has": [ header, root ]
+}
+
 
