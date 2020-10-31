@@ -122,7 +122,7 @@ var header = {
           "$has": [
             {
               "$type": "h1",
-              "$text": "hollerith.github.io"
+              "$text": "hollerith"
             }
           ]
         }
