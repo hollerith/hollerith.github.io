@@ -1,18 +1,13 @@
-const MIN = 5000; // minimum value 
-const DPI = 5000; // pixel value
-const FAT = 10;
-
-var Data = [];
-
 function render(chart){
   chart.$has = [...Data[chart._step].items.map(Item), ...[legend] ] ;
 }
 
-async function load(){
+async function load(path){
 
-  let response = await fetch('/assets/csv/sorted.csv'); // order depends*
+  let response = await fetch(path); // order depends*
   let text = await response.text();
   let csv = ParseCSV(text); 
+
   csv.shift(0); // remove headings
   csv = csv.filter((row) => { return row[2] > MIN });
 
@@ -46,7 +41,7 @@ async function race(){
     chart._step++;
     legend.$has = [legendbox, legendtext()];
     chart.$update();
-    setTimeout(race, 100);
+    setTimeout(race, RATE);
   }
 }
 
@@ -63,7 +58,7 @@ const legendbox = {
 const legendtext = () => {
   var chart = document.querySelector('#chart'); 
   if (chart) {
-    var step = 1800 + chart._step;
+    var step = TOP + chart._step;
   } else {
     var step = "";
   }
@@ -102,7 +97,7 @@ var Item = function(item, index){
         "x": `${Math.abs(item.total/DPI)+2}`,
         "y": `${(index*FAT)+(FAT/2)}`,
         "dy": ".35em",
-        "$text": `${item.total} ${item.name}`
+        "$text": ` ${item.total} ${item.name}`
       }
     ]
   }
@@ -132,8 +127,9 @@ var header = {
 }
 
 var caption = {
+  "id": "caption",
   "$type": "figcaption",
-  "$text": "CO2 Emissions by Country 1800-2013"
+  "$text": CAP || "Not set"
 }
 
 var chart = {
@@ -146,7 +142,7 @@ var chart = {
   "$has": [legend],
   "_step": -1,
   "$init": function(){
-    load();
+    load(URL);
   },
   "$update": function(){
     render(this);
@@ -169,3 +165,4 @@ var body = {
   "$cell": true,
   "$has": [ header, root ]
 }
+

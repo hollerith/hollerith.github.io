@@ -22,3 +22,5 @@ function ParseCSV(csvData, delimiter=",") {
     }
     return (data);
 }
+
+const $$_ = document.querySelector

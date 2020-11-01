@@ -2,7 +2,18 @@
 <head>
   <script src="assets/js/cell.min.js"></script>
   <script src='assets/js/utils.js'></script>
-  <script src='assets/js/index.js'></script>
+  <script>
+    const MIN = 5000; // minimum value
+    const DPI = 5000; // pixel value
+    const FAT = 10;   // bar width
+    const RATE = 100; // animation speed milliseconds TODO: requestAnimationFrame instead
+    const URL = '/assets/data/climate.csv'; // data fetch path url
+    const CAP = "CO2 Emissions by Country 1800-2013";
+    const TOP = 1800;
+
+    var Data = [];
+  </script>
+  <script src='assets/js/racer.js'></script>
   <link rel="stylesheet" href="assets/css/style.css" type="text/css" />
   <style>
 .bar {
