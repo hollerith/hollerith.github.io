@@ -7,9 +7,24 @@ url: "https://hollerith.github.io" # the base hostname & protocol for your site,
 twitter_username: secpup
 github_username:  hollerith
 
+permalink: /:year/:month/:day/:title/
+
 # Build settings
 theme: jekyll-theme-hacker
 plugins:
-  - jekyll-feed
+  [jekyll-feed, jekyll-paginate]
 
+paginate: 5
+paginate_path: "/:num/"
 
+recent_posts: 5
+excerpt_link: "More..."
+titlecase: true
+category_dir: categories
+
+authors:
+  hollerith:
+    site: http://oznz.me
+    twitter: secpup
+    github: hollerith
+    byline: old skool hacker.

@@ -1,1 +1,66 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:8888/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:8888/" rel="alternate" type="text/html" /><updated>2020-10-31T16:20:25+00:00</updated><id>http://localhost:8888/feed.xml</id><title type="html">hollerith</title><subtitle>github pages site for hollerith</subtitle></feed>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:8888/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:8888/" rel="alternate" type="text/html" /><updated>2020-11-01T01:34:39+00:00</updated><id>http://localhost:8888/feed.xml</id><title type="html">hollerith</title><subtitle>github pages site for hollerith</subtitle><entry><title type="html">Barchart races</title><link href="http://localhost:8888/barcharts" rel="alternate" type="text/html" title="Barchart races" /><published>2020-10-31T00:00:00+00:00</published><updated>2020-10-31T00:00:00+00:00</updated><id>http://localhost:8888/Base</id><content type="html" xml:base="http://localhost:8888/barcharts">&lt;h4 id=&quot;bar-chart-racing&quot;&gt;Bar chart racing&lt;/h4&gt;
+
+&lt;p&gt;What with Global Climate disaster and COVID, the bar chart race has become a ubiquitous harbinger of doom for spelling out in this, the age of denial and disinformation, the stark challenges facing us.&lt;/p&gt;
+
+&lt;p&gt;This demo uses vanillajs to fetch and graph grouped/ordered data by rendering an svg. Most graphing libraries like d3.js and chart.js can do likewise. It can be dropped in any html as a unit or widget and the scale can be altered. I’ve used a raw data set here and excluded results less than 1000. It’s easy enough to adjust the width, the viewport, the speed of the run.&lt;/p&gt;
+
+&lt;p&gt;Todo work is add axis, stop, play, forward buttons, and drill downs for each bar.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/race&quot;&gt;CO2 emissions&lt;/a&gt;&lt;/p&gt;</content><author><name>hollerith</name></author><category term="data" /><category term="github" /><category term="pages" /><category term="yolo" /><summary type="html">Bar chart racing</summary></entry><entry><title type="html">Spooky</title><link href="http://localhost:8888/2020/10/31/spooky/" rel="alternate" type="text/html" title="Spooky" /><published>2020-10-31T00:00:00+00:00</published><updated>2020-10-31T00:00:00+00:00</updated><id>http://localhost:8888/2020/10/31/spooky</id><content type="html" xml:base="http://localhost:8888/2020/10/31/spooky/">&lt;h4 id=&quot;all-dressed-up&quot;&gt;All dressed up&lt;/h4&gt;
+
+&lt;p&gt;Hackers 25th Anniversary provides the best excuse for dressing up and not going out. I don’t know if
+zoom masked balls are a thing this year or whether it is even appropriate to wear masks on a zoom call
+seeing as how we are pretty much sick of them by now. With not a hoodie in sight the avant-garde fashion
+on display in the movie seems to have aged well even if us old hackers have not.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/hackers.jpeg&quot; alt=&quot;hackers&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;spooky-all-year-round&quot;&gt;Spooky all year round&lt;/h4&gt;
+
+&lt;p&gt;Not that hackers had much of a problem blending in at Halloween up to now. There have been many changes 
+for the better in the intervening years and the community is much more diverse than before. Many people
+who identify as hackers today - information security professionals - are more likely to be seen wearing 
+a suit than a dark hoodie. Contrary to the myth it was ever thus. I only acquired my first dark hoodie 
+last year as part of some CTF swag.&lt;/p&gt;</content><author><name>hollerith</name></author><category term="infosec" /><category term="movies" /><summary type="html">All dressed up</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:8888/assets/images/hackers.jpeg" /><media:content medium="image" url="http://localhost:8888/assets/images/hackers.jpeg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Revil dread</title><link href="http://localhost:8888/Revil" rel="alternate" type="text/html" title="Revil dread" /><published>2020-10-30T00:00:00+00:00</published><updated>2020-10-30T00:00:00+00:00</updated><id>http://localhost:8888/REvil</id><content type="html" xml:base="http://localhost:8888/Revil">&lt;h4 id=&quot;are-revil-feeling-the-heat&quot;&gt;Are REvil feeling the heat?&lt;/h4&gt;
+
+&lt;p&gt;REvil gang spokesperson Unkn or Unknown wistfully accepts that travel outside Russia could be
+very dangerous for them.&lt;/p&gt;
+
+&lt;p&gt;Indeed what is the point you would think of turning over hundreds of millions of dollars in monero annually 
+if you are limited to the toxic gangster circles of Moscow and St Petersberg?&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/unknown.png&quot; alt=&quot;hackers&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Too great a show of wealth in Russia could itself draw unwanted attention from less successful but powerfully 
+placed banditi. When you live in a fascist regime where extra-judicial killings are the norm rather than the 
+exception a healthy bank balance does not come with the normal feeling of security it should.&lt;/p&gt;
+
+&lt;p&gt;Stories like those of Eugene Nikulin only reinforce the notion that despite multi-millionaire status it
+could all come crashing down in an instant, as they observe darkly, alive but in the hands of the FBI 
+or dead at the hands of their competitors or the regime. Indeed the Kremlin’s eye is never far from their 
+operations and paranoia that some gang members are FSB nannies abide.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/robocop.png&quot; alt=&quot;arrest&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;raas---ransomware-as-a-service&quot;&gt;RaaS - Ransomware as a Service&lt;/h4&gt;
+
+&lt;p&gt;Despite the huge success of their operation due to the apparent complete inability of Western companies 
+and institutions to secure their data from even run-of-the-mill consumer exploits, the overworked gang 
+are constantly seeking to evolve by copying new techniques from other gangs and to adapt their business
+model, expanding their RaaS - or Ransomware as a Service so they can pivot to selling tooling and training 
+to other gangs. This outsourcing of work will no doubt reap dividends where they simply do not have enough
+time in the day to exploit all the targets available to them and also to allow them to put some distance 
+between themselves and the heat.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/beach.png&quot; alt=&quot;beach&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Perhaps even they (and their girlfriends) might dream that if their operational security has been good enough 
+they might even be able to risk travel abroad in order to spend some of their ill-gotten gains in Paris, Milan,
+London or New York.&lt;/p&gt;
+
+&lt;p&gt;No doubt Western intelligence services and law enforcement would love them to try being as they are currently
+out of their reach.&lt;/p&gt;
+
+&lt;iframe width=&quot;420&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/ZyQCQ1VZp8s&quot;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;Watch the video from Russian OSINT on youtube here.&lt;/p&gt;</content><author><name>hollerith</name></author><category term="infosec" /><category term="crime" /><category term="blog" /><summary type="html">Are REvil feeling the heat?</summary></entry></feed>

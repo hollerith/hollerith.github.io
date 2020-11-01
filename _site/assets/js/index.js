@@ -46,7 +46,7 @@ async function race(){
     chart._step++;
     legend.$has = [legendbox, legendtext()];
     chart.$update();
-    setTimeout(race, 250);
+    setTimeout(race, 100);
   }
 }
 
@@ -82,7 +82,7 @@ var legend = {
   "id": "legend",
   "$type": "g",
   "xmlns": "http://www.w3.org/2000/svg",
-  "transform": "translate(900, 0)",
+  "transform": "translate(750, 0)",
   "$has": [legendbox, legendtext()],
 }
 
