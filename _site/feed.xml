@@ -1,4 +1,49 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:8888/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:8888/" rel="alternate" type="text/html" /><updated>2020-11-01T16:13:30+00:00</updated><id>http://localhost:8888/feed.xml</id><title type="html">hollerith</title><subtitle>github pages site for hollerith</subtitle><entry><title type="html">Barchart races</title><link href="http://localhost:8888/barcharts" rel="alternate" type="text/html" title="Barchart races" /><published>2020-10-31T00:00:00+00:00</published><updated>2020-10-31T00:00:00+00:00</updated><id>http://localhost:8888/Base</id><content type="html" xml:base="http://localhost:8888/barcharts">&lt;h4 id=&quot;trendy-charts&quot;&gt;Trendy charts&lt;/h4&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:8888/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:8888/" rel="alternate" type="text/html" /><updated>2020-11-07T13:36:19+00:00</updated><id>http://localhost:8888/feed.xml</id><title type="html">hollerith</title><subtitle>github pages site for hollerith</subtitle><entry><title type="html">Live Wallpaper</title><link href="http://localhost:8888/komorebi" rel="alternate" type="text/html" title="Live Wallpaper" /><published>2020-11-07T00:00:00+00:00</published><updated>2020-11-07T00:00:00+00:00</updated><id>http://localhost:8888/komorebi</id><content type="html" xml:base="http://localhost:8888/komorebi">&lt;h4 id=&quot;komorebi&quot;&gt;Komorebi&lt;/h4&gt;
+
+&lt;p&gt;Komorebi is an app for Linux and OSX which plays video on the root window of your desktop.&lt;/p&gt;
+
+&lt;p&gt;According to its &lt;a href=&quot;https://github.com/cheesecakeufo/komorebi&quot;&gt;github page&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;What is Komorebi?
+Komorebi is an awesome animated wallpapers manager for all Linux platforms. It provides fully customizeable image, video, and web page wallpapers that can be tweaked at any time!&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;I’m not sure whether it is in active development or not. It supports a variety of formats, comes with it’s own wallpaper creator and 
+even plays the audio if you also want ambient background music. It also says it supports web pages as well as video but I haven’t tried it yet.&lt;/p&gt;
+
+&lt;p&gt;I use a series of commands rather than use the limited utility for creating the wallpapers.&lt;/p&gt;
+
+&lt;p&gt;It has a strange install path. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/System&lt;/code&gt; and I must admit this put me off. I did look and it would be easy enough to 
+fork it and then make this configurable but in the end I decided to just get over it. I might do this at some point, I just wanted a 
+working wallpaper for now.&lt;/p&gt;
+
+&lt;p&gt;A wallpaper is a directory in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/System/Resources/Komorebi/&lt;/code&gt; with a config file, a video and a thumbnail called ‘wallpaper.jpg’.&lt;/p&gt;
+
+&lt;p&gt;I start by creating a thumbnail by stripping a frame from the video itself then optionally I strip the audio. I made a wallpaper
+from the film ‘Koyaanisqatsi’ and decided to leave Philip Glass as ambient background music.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ffmpeg -i video.mp4 -vf &quot;select=eq(n\,42)&quot; -vframes 1 wallpaper.jpg ## create thumbnail from frame 42
+ffmpeg -i video.mp4 -c:v copy -an -movflags faststart -pix_fmt yuv420p video.mp4 ## strip audio
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/komorebi.jpg&quot; alt=&quot;komorebi&quot; /&gt;&lt;/p&gt;</content><author><name>hollerith</name></author><category term="howto" /><category term="wallpaper" /><category term="linux" /><summary type="html">Komorebi</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:8888/assets/images/komorebi.jpg" /><media:content medium="image" url="http://localhost:8888/assets/images/komorebi.jpg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Gone Missing</title><link href="http://localhost:8888/disney" rel="alternate" type="text/html" title="Gone Missing" /><published>2020-11-06T00:00:00+00:00</published><updated>2020-11-06T00:00:00+00:00</updated><id>http://localhost:8888/Disney</id><content type="html" xml:base="http://localhost:8888/disney">&lt;h4 id=&quot;mandalorian-searches-for-awol-kba&quot;&gt;Mandalorian searches for AWOL KBA&lt;/h4&gt;
+
+&lt;p&gt;A knowledgebase article for an unfixed problem with the DisneyPlus app on PS4 seems to have been &lt;a href=&quot;https://help.disneyplus.com/csp?id=csp_article_content&amp;amp;sys_kb_id=79d1e308db164c90fbf26ac2ca9619b7&quot;&gt;removed&lt;/a&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Stuttering issues on PS4 
+
+If a customer reports stuttering/buffering issues on PS4 consoles, try launching the app 
+while holding L1 and R1 on the controller . This will cause Disney+ to launch without 
+the cache and should allow the app to run without issues.
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/mando.jpeg&quot; alt=&quot;tron&quot; /&gt;&lt;/p&gt;</content><author><name>hollerith</name></author><category term="movies" /><summary type="html">Mandalorian searches for AWOL KBA</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:8888/assets/images/mando.jpeg" /><media:content medium="image" url="http://localhost:8888/assets/images/mando.jpeg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Game Over</title><link href="http://localhost:8888/gameover" rel="alternate" type="text/html" title="Game Over" /><published>2020-11-01T00:00:00+00:00</published><updated>2020-11-01T00:00:00+00:00</updated><id>http://localhost:8888/GameOver</id><content type="html" xml:base="http://localhost:8888/gameover">&lt;h4 id=&quot;javascript-game-development&quot;&gt;Javascript Game Development&lt;/h4&gt;
+
+&lt;p&gt;The fad success of ‘simple’ platformers like ‘Among Us’ and previously ‘Angry Birds’ which come along every so often tend to create an itch to write some javascript games again. I thought I’d drop my base template here so that I could hack on it whenever I felt like it. It follows the private module pattern as it’s intended to be quite small. Any here is the link though there may not be much there depending on my mood. &lt;a href=&quot;/green&quot;&gt;Level One&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/tron.jpeg&quot; alt=&quot;tron&quot; /&gt;&lt;/p&gt;</content><author><name>hollerith</name></author><category term="infosec" /><category term="movies" /><summary type="html">Javascript Game Development</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:8888/assets/images/tron.jpeg" /><media:content medium="image" url="http://localhost:8888/assets/images/tron.jpeg" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Barchart races</title><link href="http://localhost:8888/barcharts" rel="alternate" type="text/html" title="Barchart races" /><published>2020-10-31T00:00:00+00:00</published><updated>2020-10-31T00:00:00+00:00</updated><id>http://localhost:8888/Base</id><content type="html" xml:base="http://localhost:8888/barcharts">&lt;h4 id=&quot;trendy-charts&quot;&gt;Trendy charts&lt;/h4&gt;
 
 &lt;p&gt;What with global climate disaster and COVID, the bar chart race has become the ubiquitous harbinger of doom for spelling out, in this the age of denial, the stark challenges facing us.&lt;/p&gt;
 

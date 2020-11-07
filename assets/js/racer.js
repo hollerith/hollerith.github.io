@@ -103,29 +103,6 @@ var Item = function(item, index){
   }
 }
 
-var header = {
-  "$type": "header",
-  "$has": [
-    {
-      "$type": "div",
-      "class": "container",
-      "$has": [
-        {
-          "$type": "a",
-          "id": "a-title",
-          "href": "/",
-          "$has": [
-            {
-              "$type": "h1",
-              "$text": "hollerith"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
-
 var caption = {
   "id": "caption",
   "$type": "figcaption",
@@ -151,6 +128,7 @@ var chart = {
 
 var root = {
   "id": "root",
+  "$cell": true,
   "$type": "div",
   "class": "container",
   "$has": [  
@@ -159,10 +137,5 @@ var root = {
       "$has": [ caption, chart ]  
     }
   ]
-}
-
-var body = {
-  "$cell": true,
-  "$has": [ header, root ]
 }
 
