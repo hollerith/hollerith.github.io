@@ -8,6 +8,19 @@
     <link rel="icon" href="icon.png" type="image/png" />
     <script src="newt.min.js"></script>
     <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/service-worker.js')
+                .then(function(registration) {
+                    console.log('Service Worker Registered', registration);
+                })
+                .catch(function(error) {
+                    console.log('Service Worker Registration Failed', error);
+                });
+            });
+        }
+
         var data = {
             $app: true,
             id: "root",
@@ -50,3 +63,4 @@
     </noscript>    
 </body>
 </html>
+
