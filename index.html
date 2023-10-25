@@ -82,6 +82,27 @@
 
         const card = createCard('spam.png', 'Spam Title', 'Spam Link');
 
+        var first = {
+            $app: true,
+            id: 'first',
+            $type: 'div',
+            $text: 'I am the first component',
+            style: 'color: red;',
+        };
+
+        var second = {
+            $app: true,
+            id: 'second',
+            $type: 'div',
+            $text: 'I am the second component',
+            style: 'color: blue;',
+            $init: function() {
+                this.addEventListener('click', function() {
+                    alert('You clicked the second component');
+                });
+            }
+        };
+
         var data = {
             $app: true,
             id: "root",
@@ -89,13 +110,24 @@
             $nodes: [editbox, listbox]
         }
 
+        // Triggering an update to test $update
+        setTimeout(function() {
+            listbox._items.push('Beans');
+            var listElement = document.getElementById('list');
+            if (listElement?.$update) {
+                listElement.$update();
+            }
+            var first = document.getElementById('first');
+            first.style = 'color: green';
+        }, 3000);
+
     </script>
 </head>
 
 <body>
     <h1>Example</h1>
     <div id="root"></div>
-    
+
     <noscript>
         Turn on JavaScript to access this site content.
     </noscript>
