@@ -80,6 +80,10 @@
             }
         }
 
+        const todo = {
+            $nodes: [editbox, listbox],
+        }
+
         const card = createCard('spam.png', 'Spam Title', 'Spam Link');
 
         var first = {
@@ -107,12 +111,12 @@
             $app: true,
             id: "root",
             class: "container",
-            $nodes: [editbox, listbox, card]
+            $nodes: [todo, card]
         }
 
         // Triggering an update to test $update
         setTimeout(function() {
-            listbox._items.push('Beans');
+            listbox._items.push('beans');
             var listElement = document.getElementById('list');
             if (listElement?.$update) {
                 listElement.$update();
