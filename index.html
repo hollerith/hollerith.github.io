@@ -26,7 +26,33 @@
                     });
             });
         }
-        
+
+        function createCard(image, name, linkText) {
+            return {
+                id: 'card',
+                $type: 'div',
+                class: 'card',
+                $nodes: [
+                    {
+                        $type: 'img',
+                        class: 'card--avatar',
+                        src: image
+                    },
+                    {
+                        $type: 'h1',
+                        class: 'card--title',
+                        $text: name
+                    },
+                    {
+                        $type: 'a',
+                        class: 'card--link',
+                        href: '#',
+                        $text: linkText
+                    }
+                ]
+            };
+        }
+
         const editbox = {
             $type: "input",
             type: "text",
@@ -60,12 +86,16 @@
             class: "container",
             $nodes: [editbox, listbox]
         }
+
     </script>
 </head>
 
 <body>
     <h1>Example</h1>
+
     <div id="root"></div>
+    <div id="list"></div>
+
     <noscript>
         Turn on JavaScript to access this site content.
     </noscript>
