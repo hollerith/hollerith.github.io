@@ -3,12 +3,17 @@
 <head>
     <title>Progressive Web Apps Rock</title>
     <meta name="viewport" content="width=device-width, user-scalable=no" />
+    
     <link rel="manifest" href="manifest.json" />
     <link rel="stylesheet" type="text/css" href="main.css">
-    <link rel="icon" href="icon.png" type="image/png" />
+
+    <link rel="icon" href="icons/icon-192x192.png" type="image/png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-icon-180x180.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="icons/apple-icon-167x167.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="icons/apple-icon-152x152.png">
+
     <script src="newt.min.js"></script>
     <script>
-        // Register Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
                 navigator.serviceWorker.register('/service-worker.js')
@@ -60,7 +65,6 @@
     <div id="root"></div>
     <noscript>
         Turn on JavaScript to access this site content.
-    </noscript>    
+    </noscript>
 </body>
 </html>
-
