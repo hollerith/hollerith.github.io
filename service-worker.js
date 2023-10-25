@@ -5,7 +5,6 @@ const cacheAssets = [
   '/index.html',
   '/style.css',
   '/newt.min.js'
-  '/main.js'
 ];
 
 // Install event
