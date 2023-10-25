@@ -25,14 +25,7 @@
                 });
             });
         }
-
-        var data = {
-            $app: true,
-            id: "root",
-            class="container",
-            style: "font-family: Helvetica; font-size: 14px;",
-            $nodes: [
-                {
+        const editbox =                 {
                     $type: "input",
                     type: "text",
                     placeholder: "Type something and press enter",
@@ -44,20 +37,26 @@
                             this.value = "";
                         }
                     }
-                },
-                {
-                    $type: "ol",
-                    id: "list",
-                    _items: [],
-                    $nodes: [],
-                    _add: function (val) { this._items.push(val) },
-                    $update: function () {
-                        this.$nodes = this._items.map(function (item) {
-                            return { $type: "li", $text: item }
-                        })
-                    }
                 }
-            ]
+        
+        const listbox = {
+            $type: "ol",
+            id: "list",
+            _items: [],
+            $nodes: [],
+            _add: function (val) { this._items.push(val) },
+            $update: function () {
+            this.$nodes = this._items.map(function (item) {
+                return { $type: "li", $text: item }
+            })
+        }
+        }
+
+        var data = {
+            $app: true,
+            id: "root",
+            class="container",
+            $nodes: [editbox, listbox]
         }
     </script>
 </head>
