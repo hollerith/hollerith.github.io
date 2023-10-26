@@ -27,7 +27,7 @@
             });
         }
 
-        function createCard(image, name, linkText) {
+        function createCard(image, name, link) {
             return {
                 id: 'card',
                 $type: 'div',
@@ -47,95 +47,58 @@
                         $type: 'a',
                         class: 'card--link',
                         href: '#',
-                        $text: linkText
+                        $text: link
                     }
                 ]
             };
         }
 
-        const editbox = {
-            $type: "input",
-            type: "text",
-            placeholder: "Type something and press enter",
-            style: "width: 100%; outline:none; padding: 5px;",
-            $init: function (e) { this.focus() },
-            onkeyup: function (e) {
-                if (e.keyCode === 13) {
-                    document.querySelector("#list")._add(this.value);
-                    this.value = "";
-                }
-            }
-        }
-
-        const listbox = {
-            $type: "ol",
-            id: "list",
-            _items: [],
-            $nodes: [],
-            _add: function (val) { this._items.push(val) },
-            $update: function () {
-                this.$nodes = this._items.map(function (item) {
-                    return { $type: "li", $text: item }
-                })
-            }
-        }
-
-        const todo = {
-            class: 'card',
-            $nodes: [editbox, listbox],
-        }
-
         const card = createCard('spam.png', 'Spam Title', 'Spam Link');
 
-        var first = {
-            $app: true,
-            id: 'first',
-            $type: 'div',
-            $text: 'I am the first component',
-            style: 'color: red;',
-        };
-
-        var second = {
-            $app: true,
-            id: 'second',
-            $type: 'div',
-            $text: 'I am the second component',
-            style: 'color: blue;',
-            $init: function() {
-                this.addEventListener('click', function() {
-                    alert('You clicked the second component');
-                });
-            }
-        };
-
-        var data = {
-            $app: true,
-            id: "root",
-            class: "container",
-            $nodes: [todo, card]
+        var root = {
+            "$app": true,
+            "id": "root",
+            "$type": "main",
+            "$nodes": [
+                {
+                    "$type": "nav",
+                    "$nodes": [
+                        {
+                            "$type": "h1",
+                            "$text": "Coffee"
+                        },
+                        {
+                            "$type": "ul",
+                            "$nodes": [
+                                {
+                                    "$type": "li",
+                                    "$text": "Home"
+                                },
+                                {
+                                    "$type": "li",
+                                    "$text": "About"
+                                },
+                                {
+                                    "$type": "li",
+                                    "$text": "Blog"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "$type": "div",
+                    "class": "container",
+                    "$nodes": [card],
+                }
+            ]
         }
-
-        // Triggering an update to test $update
-        setTimeout(function() {
-            listbox._items.push('beans');
-            var listElement = document.getElementById('list');
-            if (listElement?.$update) {
-                listElement.$update();
-            }
-            var first = document.getElementById('first');
-            first.style = 'color: green';
-        }, 3000);
-
+        
     </script>
 </head>
-
 <body>
-    <h1>Example</h1>
-    <div id="root"></div>
-
     <noscript>
         Turn on JavaScript to access this site content.
     </noscript>
 </body>
-
 </html>
