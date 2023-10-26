@@ -27,7 +27,7 @@
             });
         }
 
-        function createCard(image, name, link) {
+        function createCard(item) {
             return {
                 id: 'card',
                 $type: 'div',
@@ -36,24 +36,30 @@
                     {
                         $type: 'img',
                         class: 'card--image',
-                        src: image
+                        src: item.image
                     },
                     {
                         $type: 'h1',
                         class: 'card--title',
-                        $text: name
+                        $text: item.title
                     },
                     {
                         $type: 'a',
                         class: 'card--link',
                         href: '#',
-                        $text: link
+                        $text: item.link
                     }
                 ]
             };
         }
 
-        const card = createCard('spam.png', 'Spam Title', 'Spam Link');
+        const data = [
+            {image: 'spam.png', title: 'Spam Title', link: 'Spam'},
+            {image: 'eggs.png', title: 'Eggs Title', link: 'Eggs'},
+            {image: 'ham.png', title: 'Ham Title', link: 'Ham'},
+            {image: 'beans.png', title: 'Beans Title', link: 'Beans'}
+        ];
+
 
         var root = {
             "$app": true,
@@ -65,7 +71,7 @@
                     "$nodes": [
                         {
                             "$type": "h1",
-                            "$text": "Coffee"
+                            "$text": "PWA Rocks"
                         },
                         {
                             "$type": "ul",
@@ -89,11 +95,13 @@
                 {
                     "$type": "div",
                     "class": "container",
-                    "$nodes": [card],
+                    "$nodes": data.map(function(item) {
+                        return createCard(item);
+                    }),
                 }
             ]
         }
-        
+
     </script>
 </head>
 <body>

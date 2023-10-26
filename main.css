@@ -1,13 +1,13 @@
 :root {
-    --primary-color: #199522;
-    --secondary-color: #db4938;
-    --background-color: #fdfdfd;
+    --primary-color: #edcdd6;
+    --secondary-color: #e66b5d;
+    --background-color: #c6dede;
     --font-stack: "Nunito", sans-serif;
     --base-font-size: 1rem;
     --base-spacing: 0.5rem;
-    --card-width: 25rem;
-    --card-height: 25rem;
-    --image-height: 20rem;
+    --card-width: 20rem;
+    --card-height: 24rem;
+    --image-height: 18rem;
     --grid-gap: 1rem;
     --border-radius: 10px;
 }
@@ -29,7 +29,6 @@ body {
 main {
     max-width: 900px;
     margin: auto;
-    padding: var(--base-spacing);
     text-align: center;
 }
 
@@ -37,6 +36,8 @@ nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: var(--base-spacing);
+    background:var(--secondary-color);
 }
 
 ul {
