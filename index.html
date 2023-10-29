@@ -13,7 +13,7 @@
     <link rel="apple-touch-icon" sizes="167x167" href="icons/apple-icon-167x167.png">
     <link rel="apple-touch-icon" sizes="152x152" href="icons/apple-icon-152x152.png">
 
-    <script src="newt.min.js"></script>
+    <script src="newt.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function () {
@@ -27,7 +27,7 @@
             });
         }
 
-        function createCard(item) {
+        const createCard = (item) => {
             return {
                 id: 'card',
                 $type: 'div',
@@ -46,67 +46,132 @@
                     {
                         $type: 'a',
                         class: 'card--link',
-                        href: '#',
-                        $text: item.link
+                        href: item.link,
+                        $text: item.text
                     }
                 ]
             };
         }
 
         const data = [
-            {image: 'spam.png', title: 'Spam Title', link: 'Spam'},
-            {image: 'eggs.png', title: 'Eggs Title', link: 'Eggs'},
-            {image: 'ham.png', title: 'Ham Title', link: 'Ham'},
-            {image: 'beans.png', title: 'Beans Title', link: 'Beans'}
+            { image: 'spam.png', title: 'Spam Title', text: 'Spam', link: '/test.html' },
+            { image: 'eggs.png', title: 'Eggs Title', text: 'Eggs', link: '/#' },
+            { image: 'ham.png', title: 'Ham Title', text: 'Ham', link: '/?utm_campaign=newt' },
+            { image: 'beans.png', title: 'Beans Title', text: 'Beans', link: '/' }
         ];
 
-
-        var root = {
-            "$app": true,
-            "id": "root",
-            "$type": "main",
-            "$nodes": [
-                {
-                    "$type": "nav",
-                    "$nodes": [
-                        {
-                            "$type": "h1",
-                            "$text": "PWA Rocks"
-                        },
-                        {
-                            "$type": "ul",
-                            "$nodes": [
-                                {
-                                    "$type": "li",
-                                    "$text": "Home"
-                                },
-                                {
-                                    "$type": "li",
-                                    "$text": "About"
-                                },
-                                {
-                                    "$type": "li",
-                                    "$text": "Blog"
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "$type": "div",
-                    "class": "container",
-                    "$nodes": data.map(function(item) {
-                        return createCard(item);
-                    }),
-                }
-            ]
+        const home = {
+            "$type": "div",
+            "class": "container",
+            "$nodes": data.map(function (item) {
+                return createCard(item);
+            }),
         }
+
+        const editbox = {
+            $type: "input",
+            type: "text",
+            placeholder: "Type something and press enter",
+            style: "width: 100%; outline:none; padding: 5px;",
+            $init: function (e) { this.focus() },
+            onkeyup: function (e) {
+                if (e.keyCode === 13) {
+                    document.querySelector("#list")._add(this.value);
+                    this.value = "";
+                }
+            }
+        }
+
+        const listbox = {
+            $type: "ol",
+            id: "list",
+            _items: [],
+            $nodes: [],
+            _add: function (val) { this._items.push(val) },
+            $update: function () {
+                this.$nodes = this._items.map(function (item) {
+                    return { $type: "li", $text: item }
+                })
+            }
+        }
+
+        const button = {
+            "$type": 'button',
+            "$text": 'YOBITCH',
+            onclick: function (e) {
+                document.querySelector("#content").$nodes = [button];
+            }
+        }
+
+        const todo = {
+            class: 'card',
+            $nodes: [editbox, listbox],
+        }
+
+        const about = {
+            class: 'card',
+            $nodes: [todo],
+        }
+
+        var content = {
+            "$app": true,
+            "id": "content",
+            "$type": "main",
+            "_route": 'home',
+            "$update": function () {
+                switch (this._route) {
+                    case 'blog':
+                        this.$nodes = [home];
+                        break;
+                    case 'about':
+                        this.$nodes = [about];
+                        break;
+                    case 'home':
+                    default:
+                        this.$nodes = [home];
+                        break;
+                }
+            },
+            "$nodes": [home],
+        };
+
+        // routing
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll("nav ul li a").forEach(link => {
+                link.addEventListener("click", function(event) {
+                    event.preventDefault();
+                    const route = event.target.getAttribute("href").substring(1);
+                    content._route = route;
+                });
+            });
+
+            window.addEventListener("popstate", function () {
+                const route = window.location.pathname.substring(1);
+                content._route = route;
+            });
+        });
 
     </script>
 </head>
+
 <body>
+    <main>
+        <nav>
+            <h1>PWA Rocks</h1>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/blog">Blog</a></li>
+            </ul>
+        </nav>
+        <div id="content"></div>
+        <footer>
+            <p>Made With &hearts; By Hand</p>
+        </footer>
+    </main>
     <noscript>
         Turn on JavaScript to access this site content.
     </noscript>
 </body>
+
 </html>
