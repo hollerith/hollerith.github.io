@@ -1,0 +1,41 @@
+#ticker {
+    background: #191919bd;
+    max-height: 400px;
+    padding-top: 20px;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+#ticker h1 {
+    margin: 0;
+    color: aliceblue;
+    font-size: 60px;
+    text-align: center;
+    width: 100%;
+    display: block;
+}
+
+#ticker .timestamp {
+    font-size: 12px;
+    text-align: center;
+    width: 100%;
+    color: gold;
+}
+
+#ticker .row {
+    padding: 10px;
+    margin: 10px;
+    -webkit-transition: all 1s ease-out, opacity 1s ease-out;
+    -moz-transition: all 1s ease-out, opacity 1s ease-out;
+    transition: all 1s ease-out, opacity 1s ease-out;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    padding-bottom: 20px;
+    max-height: 600px;
+    opacity: 1;
+}
+
+#ticker .row.hidden {
+    opacity: 0;
+    max-height: 0;
+}

@@ -35,8 +35,11 @@
         },
         build: function ($parent, data, index, namespace, replace) {
             const $existing = Container.inject($parent, data, namespace, replace);
-            if ($existing) return $existing;
-            else return Container.add($parent, data, index, namespace);
+            if ($existing) {
+                return $existing;
+            } else {
+                return Container.add($parent, data, index, namespace);
+            }
         },
     };
 
@@ -133,7 +136,19 @@
             Component.$init($node);
             for (const key in renderer) {
                 if (renderer[key] !== null && renderer[key] !== undefined) {
-                    Component.set($node, key, renderer[key]);
+                    if (key === '$events' && typeof renderer[key] === 'object') {
+                        for (const event in renderer[key]) {
+                            let handlers = renderer[key][event];
+                            if (!Array.isArray(handlers)) {
+                                handlers = [handlers];
+                            }
+                            handlers.forEach(handler => {
+                                $node.addEventListener(event, handler);
+                            });
+                        }
+                    } else {
+                        Component.set($node, key, renderer[key]);
+                    }
                 }
             }
         },
@@ -209,7 +224,8 @@
                     for (const key in $parent.Renderer) {
                         if (key[0] === '_') inheritance = inheritance.concat([key]);
                     }
-                    $parent.$build(item.item, inheritance, item.index, $parent.Meta.namespace);
+                    // Assign the DOM element to the component
+                    item.item.self = $parent.$build(item.item, inheritance, item.index, $parent.Meta.namespace);
                     $parent.$nodes[item.index] = $parent.childNodes[item.index].Renderer;
                 });
             } else {
@@ -220,7 +236,8 @@
                 }
                 while ($parent.firstChild) { $parent.removeChild($parent.firstChild); }
                 components.forEach(function (component) {
-                    $fragment.$build(component, inheritance, null, $parent.Meta.namespace);
+                    // Assign the DOM element to the component
+                    component.self = $fragment.$build(component, inheritance, null, $parent.Meta.namespace);
                 });
                 $parent.appendChild($fragment);
                 $parent.$nodes = [].map.call($parent.childNodes, function ($node) { return $node.Renderer; });
@@ -232,14 +249,36 @@
             });
         },
         $update: function ($node) {
-            if ($node.parentNode && !$node.Meta.$updated && $node.$update) {
+            if ($node.parentNode && !$node.Meta.$updated) {
                 $node.Meta.$updated = true;
-                $node.$update();
-                for (const key in $node.Dirty) { Component.set($node, key, $node.Renderer[key]); }
+
+                if ($node.$update) {
+                    $node.$update();
+                }
+
+                // Recursively update child nodes and their descendants
+                const recursiveUpdate = ($currentNode) => {
+                    if ($currentNode.childNodes && $currentNode.childNodes.length > 0) {
+                        Array.from($currentNode.childNodes).forEach($childNode => {
+                            if ($childNode.$update) {
+                                this.$update($childNode);
+                            } else {
+                                recursiveUpdate($childNode);
+                            }
+                        });
+                    }
+                };
+
+                recursiveUpdate($node);
+
+                for (const key in $node.Dirty) {
+                    Component.set($node, key, $node.Renderer[key]);
+                }
+
                 $node.Meta.$updated = false;
                 $node.Dirty = null;
             }
-        },
+        }
     };
 
     const Binder = {

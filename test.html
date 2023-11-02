@@ -1,20 +1,105 @@
 <!doctype html>
 <html>
-
 <head>
-    <title>Progressive Web Apps Rock</title>
+    <title>Bitcoin Ticker</title>
     <meta name="viewport" content="width=device-width, user-scalable=no" />
 
     <link rel="manifest" href="manifest.json" />
-    <link rel="stylesheet" type="text/css" href="main.css">
-
     <link rel="icon" href="icons/icon-192x192.png" type="image/png" />
     <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-icon-180x180.png">
     <link rel="apple-touch-icon" sizes="167x167" href="icons/apple-icon-167x167.png">
     <link rel="apple-touch-icon" sizes="152x152" href="icons/apple-icon-152x152.png">
 
-    <script src="newt.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <link rel="stylesheet" type="text/css" href="ticker.css">
+    <script src="newt.js"></script>
+    
     <script>
+    // ticker app
+    const justNow = (timestamp) => {
+        const now = Date.now();
+        const diffMilliseconds = timestamp - now;
+        const absDiffMilliseconds = Math.abs(diffMilliseconds);
+    
+        const diffSeconds = Math.floor(absDiffMilliseconds / 1000);
+        const diffMinutes = Math.floor(diffSeconds / 60);
+        const diffHours = Math.floor(diffMinutes / 60);
+        const diffDays = Math.floor(diffHours / 24);
+        const diffWeeks = Math.floor(diffDays / 7);
+        const diffMonths = Math.floor(diffDays / 30);
+        const diffYears = Math.floor(diffMonths / 12);
+    
+        const suffix = diffMilliseconds > 0 ? 'to go' : 'ago';
+    
+        if (diffYears > 0) return `${diffYears} year${diffYears > 1 ? 's' : ''} ${suffix}`;
+        if (diffMonths > 0) return `${diffMonths} month${diffMonths > 1 ? 's' : ''} ${suffix}`;
+        if (diffWeeks > 0) return `${diffWeeks} week${diffWeeks > 1 ? 's' : ''} ${suffix}`;
+        if (diffDays > 0) return `${diffDays} day${diffDays > 1 ? 's' : ''} ${suffix}`;
+        if (diffHours > 0) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ${suffix}`;
+        if (diffMinutes > 0) return `${diffMinutes} minute${diffMinutes > 1 ? 's' : ''} ${suffix}`;
+        if (diffSeconds > 0) return `${diffSeconds} second${diffSeconds > 1 ? 's' : ''} ${suffix}`;
+        return 'just now';
+    }
+    
+    const Item = function (o) {
+        return {
+            class: "row hidden",
+            $init: function () {
+                const t = this;
+                setTimeout(function () { t._display() }, 200)
+            },
+            _display: function () { this.class = "row" },
+            $nodes: [
+                {
+                    $type: "h1",
+                    $text: "$" + o.dollars
+                },
+                {
+                    class: "timestamp",
+                    _timestamp: o.timestamp,
+                    $text: justNow(o.timestamp),
+                    _refresh: function () {
+                        this.$text = justNow(this._timestamp)
+                    }
+                }
+            ]
+        }
+    }
+    
+    const Bitcoin = function (Container) {
+        const ws = new WebSocket('wss://api.bitfinex.com/ws')
+        ws.addEventListener('message', function (event) {
+            if (Array.isArray(JSON.parse(event.data))) Container._add(JSON.parse(event.data))
+        })
+        ws.addEventListener('open', function (event) {
+            ws.send(JSON.stringify({ "event": "subscribe", "channel": "ticker", "pair": Container._pair }))
+        })
+        return ws;
+    }
+    
+    const Container = {
+        $init: function () {
+            this._bitcoin = Bitcoin(this)
+        },
+        _pair: "BTCUSD",
+        _add: function (data) {
+            if (data[1] !== "hb") {
+                this.$nodes.unshift(Item({ dollars: data[1], timestamp: Date.now() }))
+                this.querySelectorAll(".timestamp").forEach(function (timestamp) { timestamp._refresh() })
+            }
+        },
+        $nodes: [],
+    }
+    
+    var ticker = {
+        $app: true,
+        id: "ticker",
+        style: "position: relative;",
+        $nodes: [Container]
+    }
+    </script>
+    <script>
+        // service worker PWA
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function () {
                 navigator.serviceWorker.register('/service-worker.js')
@@ -26,116 +111,28 @@
                     });
             });
         }
-
-        function createCard(image, name, linkText) {
-            return {
-                id: 'card',
-                $type: 'div',
-                class: 'card',
-                $nodes: [
-                    {
-                        $type: 'img',
-                        class: 'card--image',
-                        src: image
-                    },
-                    {
-                        $type: 'h1',
-                        class: 'card--title',
-                        $text: name
-                    },
-                    {
-                        $type: 'a',
-                        class: 'card--link',
-                        href: '#',
-                        $text: linkText
-                    }
-                ]
-            };
-        }
-
-        const editbox = {
-            $type: "input",
-            type: "text",
-            placeholder: "Type something and press enter",
-            style: "width: 100%; outline:none; padding: 5px;",
-            $init: function (e) { this.focus() },
-            onkeyup: function (e) {
-                if (e.keyCode === 13) {
-                    document.querySelector("#list")._add(this.value);
-                    this.value = "";
-                }
-            }
-        }
-
-        const listbox = {
-            $type: "ol",
-            id: "list",
-            _items: [],
-            $nodes: [],
-            _add: function (val) { this._items.push(val) },
-            $update: function () {
-                this.$nodes = this._items.map(function (item) {
-                    return { $type: "li", $text: item }
-                })
-            }
-        }
-
-        const todo = {
-            class: 'card',
-            $nodes: [editbox, listbox],
-        }
-
-        const card = createCard('spam.png', 'Spam Title', 'Spam Link');
-
-        var first = {
-            $app: true,
-            id: 'first',
-            $type: 'div',
-            $text: 'I am the first component',
-            style: 'color: red;',
-        };
-
-        var second = {
-            $app: true,
-            id: 'second',
-            $type: 'div',
-            $text: 'I am the second component',
-            style: 'color: blue;',
-            $init: function() {
-                this.addEventListener('click', function() {
-                    alert('You clicked the second component');
-                });
-            }
-        };
-
-        var data = {
-            $app: true,
-            id: "root",
-            class: "container",
-            $nodes: [todo, card]
-        }
-
-        // Triggering an update to test $update
-        setTimeout(function() {
-            listbox._items.push('beans');
-            var listElement = document.getElementById('list');
-            if (listElement?.$update) {
-                listElement.$update();
-            }
-            var first = document.getElementById('first');
-            first.style = 'color: green';
-        }, 3000);
-
     </script>
 </head>
-
 <body>
-    <h1>Example</h1>
-    <div id="root"></div>
-
+    <style>
+        main {
+            background-image: url('ponzi.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+    </style>
+    <main>       
+        <nav>
+            <h1>Ticker Test</h1>
+        </nav>
+        <div id="ticker" class="card"></div>
+        <footer>
+            <p>Made With &hearts; By Hand</p>
+        </footer>
+    </main>
     <noscript>
         Turn on JavaScript to access this site content.
     </noscript>
 </body>
-
 </html>

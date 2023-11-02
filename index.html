@@ -96,16 +96,32 @@
         }
 
         const button = {
-            "$type": 'button',
-            "$text": 'YOBITCH',
-            onclick: function (e) {
-                document.querySelector("#content").$nodes = [button];
+            $type: 'button',
+            $text: 'Click me',
+            style: 'margin: 1em; padding: .5em;',
+            $events: {
+                click: function(e) {
+                    console.log('Button clicked', e);
+                },
+                mouseover: [
+                    function(e) {
+                        console.log('Mouse over', e);
+                        this.style.color = 'red';
+                    },
+                    function(e) {
+                        console.log('Another mouse over handler', e);
+                    }
+                ],
+                mouseout: function(e) {
+                    console.log('Mouse out', e);
+                    this.style.color = 'green';
+                }
             }
         }
 
         const todo = {
             class: 'card',
-            $nodes: [editbox, listbox],
+            $nodes: [editbox, listbox, button],
         }
 
         const about = {
@@ -116,7 +132,7 @@
         var content = {
             "$app": true,
             "id": "content",
-            "$type": "main",
+            "$type": "section",
             "_route": 'home',
             "$update": function () {
                 switch (this._route) {
@@ -170,7 +186,7 @@
         </footer>
     </main>
     <noscript>
-        Turn on JavaScript to access this site content.
+        Requires Javascript
     </noscript>
 </body>
 

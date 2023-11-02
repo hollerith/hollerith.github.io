@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+    <title>Bitcoin Ticker</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" href="icons/icon-192x192.png" type="image/png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-icon-180x180.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="icons/apple-icon-167x167.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="icons/apple-icon-152x152.png">
+
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <link rel="stylesheet" type="text/css" href="ticker.css">
+
+    <script src="newt.js"></script>
+    <script src="ticker.js"></script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(function (registration) {
+                        console.log('Service Worker Registered', registration);
+                    })
+                    .catch(function (error) {
+                        console.log('Service Worker Registration Failed', error);
+                    });
+            });
+        }
+    </script>
+</head>
+<body>
+    <style>
+        main {
+            background-image: url('ponzi.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+    </style>
+    <main>
+        <nav>
+            <h1>Examples</h1>
+        </nav>
+        <div id="ticker" class="card"></div>
+        <footer>
+            <p>Made With &hearts; By Hand</p>
+        </footer>
+    </main>
+    <noscript>
+        Turn on JavaScript to access this site content.
+    </noscript>
+</body>
+</html>
