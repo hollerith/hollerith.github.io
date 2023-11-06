@@ -131,6 +131,277 @@
         },
     };
 
+    const Template = {
+        otag: "{{",
+        ctag: "}}",
+        pragmas: {},
+        buffer: [],
+        pragmas_implemented: {
+            "IMPLICIT-ITERATOR": true
+        },
+        context: {},
+        regexCache: {},
+
+        render: function (template, context = {}, partials, in_recursion) {
+            if (!in_recursion) {
+                this.context = context;
+                this.buffer = [];
+            }
+
+            if (!template.includes(this.otag)) {
+                if (in_recursion) {
+                    return template;
+                } else {
+                    this.send(template);
+                    return;
+                }
+            }
+
+            template = this.render_pragmas(template);
+            let html = this.render_section(template, context, partials);
+
+            if (html === false) {
+                html = this.render_tags(template, context, partials, in_recursion);
+            }
+
+            if (in_recursion) {
+                return html;
+            } else {
+                this.sendLines(html);
+            }
+        },
+
+        send: function (line) {
+            if (line !== "") {
+                this.buffer.push(line);
+            }
+        },
+
+        sendLines: function (text) {
+            if (text) {
+                const lines = text.split("\n");
+                lines.forEach((line) => this.send(line));
+            }
+        },
+
+        render_pragmas: function (template) {
+            if (!template.includes(this.otag + "%")) {
+                return template;
+            }
+
+            const regex = this.getCachedRegex("render_pragmas", () =>
+                new RegExp(this.otag + "%([\\w-]+) ?([\\w]+=[\\w]+)?" + this.ctag, "g")
+            );
+
+            return template.replace(regex, (match, pragma, options) => {
+                if (!this.pragmas_implemented[pragma]) {
+                    throw new Error(`This implementation of mustache doesn't understand the '${pragma}' pragma`);
+                }
+                this.pragmas[pragma] = {};
+                if (options) {
+                    const opts = options.split("=");
+                    this.pragmas[pragma][opts[0]] = opts[1];
+                }
+                return "";
+            });
+        },
+
+        render_partial: function (name, context, partials) {
+            name = name.trim();
+            if (!partials || partials[name] === undefined) {
+                throw new Error(`unknown_partial '${name}'`);
+            }
+            if (!context || typeof context[name] != "object") {
+                return this.render(partials[name], context, partials, true);
+            }
+            return this.render(partials[name], context[name], partials, true);
+        },
+
+        render_section: function (template, context, partials) {
+            if (!template.includes(this.otag + "#") && !template.includes(this.otag + "^")) {
+                return false;
+            }
+
+            const regex = this.getCachedRegex("render_section", () =>
+                new RegExp(`^([\\s\\S]*?)${this.otag}(\\^|\\#)\\s*(.+)\\s*${this.ctag}\\n*([\\s\\S]*?)${this.otag}\\/\\s*\\3\\s*${this.ctag}\\s*([\\s\\S]*)$`, "g")
+            );
+
+            return template.replace(regex, (match, before, type, name, content, after) => {
+                const renderedBefore = before ? this.render_tags(before, context, partials, true) : "";
+                const renderedAfter = after ? this.render(after, context, partials, true) : "";
+                let renderedContent;
+                const value = this.find(name, context);
+
+                if (type === "^") {
+                    if (!value || (Array.isArray(value) && value.length === 0)) {
+                        renderedContent = this.render(content, context, partials, true);
+                    } else {
+                        renderedContent = "";
+                    }
+                } else if (type === "#") {
+                    if (Array.isArray(value)) {
+                        renderedContent = value.map((row) =>
+                            this.render(content, this.create_context(row), partials, true)
+                        ).join("");
+                    } else if (this.is_object(value)) {
+                        renderedContent = this.render(content, this.create_context(value), partials, true);
+                    } else if (typeof value == "function") {
+                        renderedContent = value.call(context, content, (text) =>
+                            this.render(text, context, partials, true)
+                        );
+                    } else if (value) {
+                        renderedContent = this.render(content, context, partials, true);
+                    } else {
+                        renderedContent = "";
+                    }
+                }
+
+                return renderedBefore + renderedContent + renderedAfter;
+            });
+        },
+
+        render_tags: function (template, context, partials, in_recursion) {
+            const new_regex = () =>
+                new RegExp(`${this.otag}(=|!|>|\\{|%)?([^\\/#\\^]+?)\\1?${this.ctag}+`, "g");
+
+            let regex = new_regex();
+            const tag_replace_callback = (match, operator, name) => {
+                switch (operator) {
+                    case "!":
+                        return "";
+                    case "=":
+                        this.set_delimiters(name);
+                        regex = new_regex();
+                        return "";
+                    case ">":
+                        return this.render_partial(name, context, partials);
+                    case "{":
+                        return this.find(name, context);
+                    default:
+                        return this.escapeHTML(this.find(name, context));
+                }
+            };
+
+            const lines = template.split("\n");
+            for (let i = 0; i < lines.length; i++) {
+                lines[i] = lines[i].replace(regex, tag_replace_callback, this);
+                if (!in_recursion) {
+                    this.send(lines[i]);
+                }
+            }
+
+            if (in_recursion) {
+                return lines.join("\n");
+            }
+        },
+
+        set_delimiters: function (delimiters) {
+            const dels = delimiters.split(" ");
+            this.otag = this.escape_regex(dels[0]);
+            this.ctag = this.escape_regex(dels[1]);
+        },
+
+        escape_regex: function (text) {
+            return text.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        },
+
+        find: function (name, context) {
+            name = name.trim();
+            const is_kinda_truthy = (bool) => bool === false || bool === 0 || bool;
+            let value;
+
+            if (name.includes('.')) {
+                const childValue = this.walk_context(name, context);
+                if (is_kinda_truthy(childValue)) {
+                    value = childValue;
+                }
+            } else {
+                if (is_kinda_truthy(context[name])) {
+                    value = context[name];
+                } else if (is_kinda_truthy(this.context[name])) {
+                    value = this.context[name];
+                }
+            }
+
+            if (typeof value == "function") {
+                return value.apply(context);
+            }
+            return value !== undefined ? value : "";
+        },
+
+        walk_context: function (name, context) {
+            const path = name.split('.');
+            let value_context = context[path[0]] !== undefined ? context : this.context;
+            let value = value_context[path.shift()];
+            while (value !== undefined && path.length > 0) {
+                value_context = value;
+                value = value[path.shift()];
+            }
+            if (typeof value == "function") {
+                return value.apply(value_context);
+            }
+            return value;
+        },
+
+        includes: function (needle, haystack) {
+            return haystack.indexOf(this.otag + needle) !== -1;
+        },
+
+        create_context: function (_context) {
+            if (this.is_object(_context)) {
+                return _context;
+            } else {
+                let iterator = ".";
+                if (this.pragmas["IMPLICIT-ITERATOR"]) {
+                    iterator = this.pragmas["IMPLICIT-ITERATOR"].iterator;
+                }
+                const ctx = {};
+                ctx[iterator] = _context;
+                return ctx;
+            }
+        },
+
+        is_object: function (a) {
+            return a && typeof a == "object";
+        },
+
+        map: function (array, fn) {
+            return array.map(fn);
+        },
+
+        getCachedRegex: function (name, generator) {
+            if (!this.regexCache[this.otag]) {
+                this.regexCache[this.otag] = {};
+            }
+            if (!this.regexCache[this.otag][this.ctag]) {
+                this.regexCache[this.otag][this.ctag] = {};
+            }
+            if (!this.regexCache[this.otag][this.ctag][name]) {
+                this.regexCache[this.otag][this.ctag][name] = generator(this.otag, this.ctag);
+            }
+            return this.regexCache[this.otag][this.ctag][name];
+        },
+
+        escapeHTML: function (string) {
+            return String(string)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#39;");
+        },
+
+        to_html: function (template, view, partials, send_fun) {
+            if (send_fun) {
+                this.send = send_fun;
+            }
+            this.render(template, view, partials);
+            if (!send_fun) {
+                return this.buffer.join("\n");
+            }
+        }
+    };
+
     const Component = {
         build: function ($node, renderer) {
             Component.$init($node);
@@ -167,8 +438,13 @@
                     if (typeof val === 'function') val = Component.multiline(val);
                     $node.textContent = val;
                 } else if (key === '$html') {
-                    if (typeof val === 'function') val = Component.multiline(val);
-                    $node.innerHTML = val;
+                    if (typeof val === 'object' && val.template && val.data) {
+                        const html = Template.to_html(val.template, val.data, val.partials);
+                        $node.innerHTML = html;
+                    } else {
+                        if (typeof val === 'function') val = Component.multiline(val);
+                        $node.innerHTML = val;
+                    }
                 } else if (key === '$nodes') {
                     Component.$nodes($node, val);
                 }
@@ -211,9 +487,12 @@
             }).filter(function (item) {
                 return item;
             });
+
             if (old.length > 0) {
                 const diff = Engine.diff(old, components);
-                diff['-'].forEach(function (item) { $parent.childNodes[item.index].Kill = true; });
+                diff['-'].forEach(function (item) {
+                    $parent.childNodes[item.index].Kill = true;
+                });
                 [].filter.call($parent.childNodes, function ($node) {
                     return $node.Kill;
                 }).forEach(function ($node) {
@@ -224,9 +503,22 @@
                     for (const key in $parent.Renderer) {
                         if (key[0] === '_') inheritance = inheritance.concat([key]);
                     }
-                    // Assign the DOM element to the component
-                    item.item.self = $parent.$build(item.item, inheritance, item.index, $parent.Meta.namespace);
-                    $parent.$nodes[item.index] = $parent.childNodes[item.index].Renderer;
+                    const domElement = $parent.$build(item.item, inheritance, item.index, $parent.Meta.namespace);
+                    item.item.self = domElement;
+                    Object.keys(item.item).forEach(key => {
+                        if (key.startsWith('_')) {
+                            Object.defineProperty(item.item, key, {
+                                set: function (newValue) {
+                                    this.self[key] = newValue;
+                                    domElement[key] = newValue;
+                                },
+                                get: function () {
+                                    return this.self[key];
+                                }
+                            });
+                        }
+                    });
+                    $parent.$nodes[item.index] = domElement.Renderer;
                 });
             } else {
                 const $fragment = Component.$type({ $type: 'fragment' });
@@ -234,10 +526,25 @@
                 for (const key in $parent.Renderer) {
                     if (key[0] === '_') inheritance = inheritance.concat([key]);
                 }
-                while ($parent.firstChild) { $parent.removeChild($parent.firstChild); }
+                while ($parent.firstChild) {
+                    $parent.removeChild($parent.firstChild);
+                }
                 components.forEach(function (component) {
-                    // Assign the DOM element to the component
-                    component.self = $fragment.$build(component, inheritance, null, $parent.Meta.namespace);
+                    const domElement = $fragment.$build(component, inheritance, null, $parent.Meta.namespace);
+                    component.self = domElement;
+                    Object.keys(component).forEach(key => {
+                        if (key.startsWith('_')) {
+                            Object.defineProperty(component, key, {
+                                set: function (newValue) {
+                                    this.self[key] = newValue;
+                                    domElement[key] = newValue;
+                                },
+                                get: function () {
+                                    return this.self[key];
+                                }
+                            });
+                        }
+                    });
                 });
                 $parent.appendChild($fragment);
                 $parent.$nodes = [].map.call($parent.childNodes, function ($node) { return $node.Renderer; });
