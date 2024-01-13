@@ -11,16 +11,63 @@
     <link rel="apple-touch-icon" sizes="152x152" href="icons/apple-icon-152x152.png">
 
     <link rel="stylesheet" type="text/css" href="main.css">
-    <link rel="stylesheet" type="text/css" href="ticker.css">
-    <script src="newt.js"></script>
-    
+    <style>
+        #Ticker {
+            background: #191919bd;
+            max-height: 400px;
+            padding-top: 20px;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        #Ticker h1 {
+            margin: 0;
+            font-size: 60px;
+            text-align: center;
+            width: 100%;
+            display: block;
+        
+            /* Metallic Effect */
+            background: -webkit-linear-gradient(top, lightgoldenrodyellow, gold, darkgoldenrod);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0px 2px 2px rgba(0,0,0,0.5);
+            letter-spacing: 3px;
+        }
+
+
+        #Ticker .timestamp {
+            font-size: 12px;
+            text-align: center;
+            width: 100%;
+            color: gold;
+        }
+
+        #Ticker .row {
+            padding: 10px;
+            margin: 10px;
+            -webkit-transition: all 1s ease-out, opacity 1s ease-out;
+            -moz-transition: all 1s ease-out, opacity 1s ease-out;
+            transition: all 1s ease-out, opacity 1s ease-out;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            padding-bottom: 20px;
+            opacity: 1;
+        }
+
+        #Ticker .row.hidden {
+            opacity: 0;
+            max-height: 0;
+        }
+    </style>
+    <script src="monster.js"></script>
+
     <script>
-    // ticker app
+    // Ticker app
     const justNow = (timestamp) => {
         const now = Date.now();
         const diffMilliseconds = timestamp - now;
         const absDiffMilliseconds = Math.abs(diffMilliseconds);
-    
+
         const diffSeconds = Math.floor(absDiffMilliseconds / 1000);
         const diffMinutes = Math.floor(diffSeconds / 60);
         const diffHours = Math.floor(diffMinutes / 60);
@@ -28,9 +75,9 @@
         const diffWeeks = Math.floor(diffDays / 7);
         const diffMonths = Math.floor(diffDays / 30);
         const diffYears = Math.floor(diffMonths / 12);
-    
+
         const suffix = diffMilliseconds > 0 ? 'to go' : 'ago';
-    
+
         if (diffYears > 0) return `${diffYears} year${diffYears > 1 ? 's' : ''} ${suffix}`;
         if (diffMonths > 0) return `${diffMonths} month${diffMonths > 1 ? 's' : ''} ${suffix}`;
         if (diffWeeks > 0) return `${diffWeeks} week${diffWeeks > 1 ? 's' : ''} ${suffix}`;
@@ -40,8 +87,8 @@
         if (diffSeconds > 0) return `${diffSeconds} second${diffSeconds > 1 ? 's' : ''} ${suffix}`;
         return 'just now';
     }
-    
-    const Item = function (o) {
+
+    const Row = function (o) {
         return {
             class: "row hidden",
             $init: function () {
@@ -65,37 +112,35 @@
             ]
         }
     }
-    
-    const Bitcoin = function (Container) {
-        const ws = new WebSocket('wss://api.bitfinex.com/ws')
-        ws.addEventListener('message', function (event) {
-            if (Array.isArray(JSON.parse(event.data))) Container._add(JSON.parse(event.data))
-        })
-        ws.addEventListener('open', function (event) {
-            ws.send(JSON.stringify({ "event": "subscribe", "channel": "ticker", "pair": Container._pair }))
-        })
-        return ws;
-    }
-    
-    const Container = {
-        $init: function () {
-            this._bitcoin = Bitcoin(this)
-        },
+
+    var Ticker = {
+        $app: true,
+        id: "Ticker",
+        style: "position: relative;",
+        class: 'card',
         _pair: "BTCUSD",
         _add: function (data) {
             if (data[1] !== "hb") {
-                this.$nodes.unshift(Item({ dollars: data[1], timestamp: Date.now() }))
-                this.querySelectorAll(".timestamp").forEach(function (timestamp) { timestamp._refresh() })
+                Ticker.$nodes.unshift(Row({ dollars: data[1], timestamp: Date.now() }));
+                if (Ticker.$nodes.length > 5) {
+                    Ticker.$nodes.pop();
+                }                
+                Ticker.querySelectorAll(".timestamp").forEach(function (timestamp) { 
+                    timestamp._refresh() 
+                })
             }
         },
-        $nodes: [],
-    }
-    
-    var ticker = {
-        $app: true,
-        id: "ticker",
-        style: "position: relative;",
-        $nodes: [Container]
+        _bitcoin: null,
+        $init: function() {
+            this._bitcoin = new WebSocket('wss://api.bitfinex.com/ws')
+            this._bitcoin.addEventListener('message', function (event) {
+                if (Array.isArray(JSON.parse(event.data))) Ticker._add(JSON.parse(event.data))
+            })
+            this._bitcoin.addEventListener('open', function (event) {
+                this.send(JSON.stringify({ "event": "subscribe", "channel": "Ticker", "pair": Ticker._pair }))
+            })
+        },
+        $nodes: []
     }
 
     // routing
@@ -112,7 +157,7 @@
             const route = window.location.pathname.substring(1);
             content._route = route;
         });
-    });        
+    });
     </script>
     <script>
         // service worker PWA
@@ -138,7 +183,7 @@
             background-position: center;
         }
     </style>
-    <main>       
+    <main>
         <nav>
             <h1>Bitcoin</h1>
             <ul>
@@ -150,7 +195,7 @@
                 <li><a class='link' href="/blog">Blog</a></li>
             </ul>
         </nav>
-        <div id="ticker" class="card"></div>
+        <div id="Ticker" class="card"></div>
         <footer>
             <p>Made With &hearts; By Hand</p>
         </footer>

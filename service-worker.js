@@ -4,7 +4,7 @@ const cacheAssets = [
     '/',
     '/index.html',
     '/style.css',
-    '/newt.js'
+    '/monster.js'
 ];
 
 // Install event
