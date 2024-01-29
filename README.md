@@ -1,4 +1,4 @@
 # hollerith.github.io
 
-> [Progressive web app testing](https://hollerith.github.io)
+> Just playing around with some concepts
 
